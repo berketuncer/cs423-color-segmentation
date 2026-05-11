@@ -62,6 +62,8 @@ def evaluate_dataset_summary(
                 "absolute_error": absolute_error,
                 "false_positives": false_positives,
                 "false_negatives": false_negatives,
+                "contour_count": result.contour_count,
+                "contour_lengths": result.contour_lengths,
                 "lighting": item["lighting"],
                 "background": item["background"],
                 "overlap": item["overlap"],
@@ -71,6 +73,8 @@ def evaluate_dataset_summary(
         )
 
     image_count = len(per_image_results)
+    total_fp = sum(r["false_positives"] for r in per_image_results)
+    total_fn = sum(r["false_negatives"] for r in per_image_results)
     summary = {
         "dataset_name": metadata["dataset_name"],
         "metadata_schema_version": metadata["metadata_schema_version"],
@@ -80,7 +84,10 @@ def evaluate_dataset_summary(
         "image_count": image_count,
         "exact_match_accuracy": exact_matches / image_count if image_count else 0.0,
         "mean_absolute_error": sum(absolute_errors) / image_count if image_count else 0.0,
+        "total_false_positives": total_fp,
+        "total_false_negatives": total_fn,
         "average_runtime_ms": total_runtime_ms / image_count if image_count else 0.0,
+        "total_runtime_ms": round(total_runtime_ms, 4),
         "per_image": per_image_results,
     }
     return summary
@@ -106,7 +113,10 @@ def run_experiments(
                 "profile": profile_name,
                 "exact_match_accuracy": summary["exact_match_accuracy"],
                 "mean_absolute_error": summary["mean_absolute_error"],
+                "total_false_positives": summary["total_false_positives"],
+                "total_false_negatives": summary["total_false_negatives"],
                 "average_runtime_ms": summary["average_runtime_ms"],
+                "total_runtime_ms": summary["total_runtime_ms"],
             }
         )
 

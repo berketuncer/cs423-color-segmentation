@@ -8,6 +8,7 @@ from typing import Any, Optional
 import numpy as np
 
 from cs423_segmentation.color import threshold_hsv, threshold_rgb
+from cs423_segmentation.contour import count_contours
 from cs423_segmentation.counting import count_connected_components, extract_components
 from cs423_segmentation.morphology import closing, opening
 
@@ -17,6 +18,13 @@ class PipelineResult:
     count: int
     component_sizes: list[int]
     mask: np.ndarray
+    # Contour-based count (boundary tracing), kept for comparison with CCL.
+    contour_count: int = 0
+    contour_lengths: list[int] = None  # type: ignore[assignment]
+
+    def __post_init__(self) -> None:
+        if self.contour_lengths is None:
+            self.contour_lengths = []
 
 
 def run_pipeline(image: np.ndarray, config: dict[str, Any]) -> PipelineResult:
@@ -46,7 +54,14 @@ def run_pipeline(image: np.ndarray, config: dict[str, Any]) -> PipelineResult:
     count, component_sizes = count_connected_components(
         cleaned, min_component_size=min_component_size
     )
-    return PipelineResult(count=count, component_sizes=component_sizes, mask=cleaned)
+    contour_count, contour_lengths = count_contours(cleaned, min_area=min_component_size)
+    return PipelineResult(
+        count=count,
+        component_sizes=component_sizes,
+        mask=cleaned,
+        contour_count=contour_count,
+        contour_lengths=contour_lengths,
+    )
 
 
 def _apply_refinement(

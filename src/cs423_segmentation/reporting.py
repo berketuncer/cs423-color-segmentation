@@ -42,19 +42,80 @@ def generate_report(
 
     save_csv(
         tables_dir / "profile-summary.csv",
-        ["profile", "exact_match_accuracy", "mean_absolute_error", "average_runtime_ms"],
+        [
+            "profile",
+            "exact_match_accuracy",
+            "mean_absolute_error",
+            "total_false_positives",
+            "total_false_negatives",
+            "average_runtime_ms",
+            "total_runtime_ms",
+        ],
         experiment_summary["profiles"],
     )
     save_text(
         tables_dir / "profile-summary.md",
         build_markdown_table(
             experiment_summary["profiles"],
-            ["profile", "exact_match_accuracy", "mean_absolute_error", "average_runtime_ms"],
+            [
+                "profile",
+                "exact_match_accuracy",
+                "mean_absolute_error",
+                "total_false_positives",
+                "total_false_negatives",
+                "average_runtime_ms",
+            ],
             {
                 "profile": "Profile",
-                "exact_match_accuracy": "Exact Match Accuracy",
-                "mean_absolute_error": "Mean Absolute Error",
-                "average_runtime_ms": "Average Runtime (ms)",
+                "exact_match_accuracy": "Accuracy",
+                "mean_absolute_error": "MAE",
+                "total_false_positives": "Total FP",
+                "total_false_negatives": "Total FN",
+                "average_runtime_ms": "Avg Runtime (ms)",
+            },
+        ),
+    )
+
+    # ── Runtime summary table ────────────────────────────────────────────────
+    save_csv(
+        tables_dir / "runtime-summary.csv",
+        ["profile", "average_runtime_ms", "total_runtime_ms"],
+        experiment_summary["profiles"],
+    )
+    save_text(
+        tables_dir / "runtime-summary.md",
+        build_markdown_table(
+            experiment_summary["profiles"],
+            ["profile", "average_runtime_ms", "total_runtime_ms"],
+            {
+                "profile": "Profile",
+                "average_runtime_ms": "Avg Runtime per Image (ms)",
+                "total_runtime_ms": "Total Runtime (ms)",
+            },
+        ),
+    )
+
+    # ── False-positive / False-negative summary table ────────────────────────
+    save_csv(
+        tables_dir / "fp-fn-summary.csv",
+        ["profile", "exact_match_accuracy", "total_false_positives", "total_false_negatives"],
+        experiment_summary["profiles"],
+    )
+    save_text(
+        tables_dir / "fp-fn-summary.md",
+        build_markdown_table(
+            experiment_summary["profiles"],
+            [
+                "profile",
+                "exact_match_accuracy",
+                "total_false_positives",
+                "total_false_negatives",
+            ],
+            {
+                "profile": "Profile",
+                "exact_match_accuracy": "Accuracy",
+                "total_false_positives": "False Positives (total)",
+                "total_false_negatives": "False Negatives (total)",
             },
         ),
     )
