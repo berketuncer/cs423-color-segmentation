@@ -1,0 +1,257 @@
+{
+  "dataset_name": "custom-real-dataset",
+  "metadata_schema_version": "v1",
+  "profile_set_path": "configs/profiles/v1/multi-color-template.json",
+  "images": [
+    {
+      "image_id": "real_red_1",
+      "image_path": "data/real/raw/real_red_1.png",
+      "target_color": "red",
+      "expected_count": 1,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_2",
+      "image_path": "data/real/raw/real_red_2.png",
+      "target_color": "red",
+      "expected_count": 1,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_3",
+      "image_path": "data/real/raw/real_red_3.png",
+      "target_color": "red",
+      "expected_count": 1,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_4",
+      "image_path": "data/real/raw/real_red_4.png",
+      "target_color": "red",
+      "expected_count": 1,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_5",
+      "image_path": "data/real/raw/real_red_5.png",
+      "target_color": "red",
+      "expected_count": 3,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_6",
+      "image_path": "data/real/raw/real_red_6.png",
+      "target_color": "red",
+      "expected_count": 3,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_red_7",
+      "image_path": "data/real/raw/real_red_7.png",
+      "target_color": "red",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom red images"
+    },
+    {
+      "image_id": "real_blue_1",
+      "image_path": "data/real/raw/real_blue_1.png",
+      "target_color": "blue",
+      "expected_count": 4,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_blue_2",
+      "image_path": "data/real/raw/real_blue_2.png",
+      "target_color": "blue",
+      "expected_count": 6,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_blue_3",
+      "image_path": "data/real/raw/real_blue_3.png",
+      "target_color": "blue",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_blue_4",
+      "image_path": "data/real/raw/real_blue_4.png",
+      "target_color": "blue",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_blue_5",
+      "image_path": "data/real/raw/real_blue_5.png",
+      "target_color": "blue",
+      "expected_count": 6,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_blue_6",
+      "image_path": "data/real/raw/real_blue_6.png",
+      "target_color": "blue",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom blue images"
+    },
+    {
+      "image_id": "real_green_1",
+      "image_path": "data/real/raw/real_green_1.png",
+      "target_color": "green",
+      "expected_count": 4,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_green_2",
+      "image_path": "data/real/raw/real_green_2.png",
+      "target_color": "green",
+      "expected_count": 7,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_green_3",
+      "image_path": "data/real/raw/real_green_3.png",
+      "target_color": "green",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_green_4",
+      "image_path": "data/real/raw/real_green_4.png",
+      "target_color": "green",
+      "expected_count": 4,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_green_5",
+      "image_path": "data/real/raw/real_green_5.png",
+      "target_color": "green",
+      "expected_count": 6,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_green_6",
+      "image_path": "data/real/raw/real_green_6.png",
+      "target_color": "green",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom green images"
+    },
+    {
+      "image_id": "real_yellow_1",
+      "image_path": "data/real/raw/real_yellow_1.png",
+      "target_color": "yellow",
+      "expected_count": 4,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    },
+    {
+      "image_id": "real_yellow_2",
+      "image_path": "data/real/raw/real_yellow_2.png",
+      "target_color": "yellow",
+      "expected_count": 6,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    },
+    {
+      "image_id": "real_yellow_3",
+      "image_path": "data/real/raw/real_yellow_3.png",
+      "target_color": "yellow",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    },
+    {
+      "image_id": "real_yellow_4",
+      "image_path": "data/real/raw/real_yellow_4.png",
+      "target_color": "yellow",
+      "expected_count": 4,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    },
+    {
+      "image_id": "real_yellow_5",
+      "image_path": "data/real/raw/real_yellow_5.png",
+      "target_color": "yellow",
+      "expected_count": 6,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    },
+    {
+      "image_id": "real_yellow_6",
+      "image_path": "data/real/raw/real_yellow_6.png",
+      "target_color": "yellow",
+      "expected_count": 5,
+      "lighting": "controlled",
+      "background": "plain",
+      "overlap": "none",
+      "notes": "Custom yellow images"
+    }
+  ]
+}
