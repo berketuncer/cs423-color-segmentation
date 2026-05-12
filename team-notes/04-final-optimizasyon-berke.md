@@ -38,4 +38,4 @@ Bütün bu ince ayarların (tuning) ardından sistemi baştan sona çalıştırd
 
 RGB yöntemleri, tahmin ettiğimiz gibi gerçek dünya ışık koşullarında daha düşük başarı gösterdi (%33 - %100 arası). Bu zaten projenin raporunda "Neden HSV kullanmalıyız?" sorusunun en büyük kanıtı ve literatür bulgusu olarak yer alacak.
 
-Özetle, benim tarafımda projenin **kod, test, gerçek veri entegrasyonu ve optimizasyon** süreçleri kusursuz bir şekilde tamamlandı. Çıktılarımız (`results/bundles/real/`) sunuma ve teslime tamamen hazır durumda. Rapor yazım sürecinde bu notları doğrudan teknik detaylar bölümüne aktarabiliriz.
+Özetle, benim tarafımda projenin **kod, test, gerçek veri entegrasyonu ve optimizasyon** süreçleri kusursuz bir şekilde tamamlandı. Çıktılarımız (`results/datasets/real/presentation-bundle/`) sunuma ve teslime tamamen hazır durumda. Rapor yazım sürecinde bu notları doğrudan teknik detaylar bölümüne aktarabiliriz.

@@ -7,8 +7,9 @@ from pathlib import Path
 from typing import Any, Optional, Union
 
 from cs423_segmentation.dataset import load_dataset_metadata, load_profile_set
-from cs423_segmentation.evaluation import evaluate_dataset, run_experiments
+from cs423_segmentation.evaluation import evaluate_dataset, run_experiments, infer_profile_target_color
 from cs423_segmentation.io_utils import load_image, save_csv, save_text
+from cs423_segmentation.output_layout import ReportLayout
 from cs423_segmentation.pipeline import run_pipeline
 from cs423_segmentation.visualization import save_mask_image, save_overlay_image
 
@@ -23,27 +24,24 @@ def generate_report(
     selected_profiles = profile_names or sorted(profile_set["profiles"])
     report_root = Path(output_dir)
     report_root.mkdir(parents=True, exist_ok=True)
-
-    tables_dir = report_root / "tables"
-    figures_dir = report_root / "figures"
-    details_dir = report_root / "details"
-    masks_dir = report_root / "visuals" / "masks"
-    overlays_dir = report_root / "visuals" / "overlays"
-    for directory in (tables_dir, figures_dir, details_dir, masks_dir, overlays_dir):
-        directory.mkdir(parents=True, exist_ok=True)
+    layout = ReportLayout(report_root)
+    layout.mkdirs_for_report()
 
     experiment_summary = run_experiments(
-        metadata_file, details_dir / "experiment-summary.json", selected_profiles
+        metadata_file, layout.json_details / "experiment-summary.json", selected_profiles
     )
     detail_summaries = [
-        evaluate_dataset(metadata_file, profile_name, details_dir / f"{profile_name}-detail.json")
+        evaluate_dataset(
+            metadata_file, profile_name, layout.json_details / f"{profile_name}-detail.json"
+        )
         for profile_name in selected_profiles
     ]
 
     save_csv(
-        tables_dir / "profile-summary.csv",
+        layout.tables / "profile-summary.csv",
         [
             "profile",
+            "image_count",
             "exact_match_accuracy",
             "mean_absolute_error",
             "total_false_positives",
@@ -54,11 +52,12 @@ def generate_report(
         experiment_summary["profiles"],
     )
     save_text(
-        tables_dir / "profile-summary.md",
+        layout.tables / "profile-summary.md",
         build_markdown_table(
             experiment_summary["profiles"],
             [
                 "profile",
+                "image_count",
                 "exact_match_accuracy",
                 "mean_absolute_error",
                 "total_false_positives",
@@ -67,6 +66,7 @@ def generate_report(
             ],
             {
                 "profile": "Profile",
+                "image_count": "Images",
                 "exact_match_accuracy": "Accuracy",
                 "mean_absolute_error": "MAE",
                 "total_false_positives": "Total FP",
@@ -78,12 +78,12 @@ def generate_report(
 
     # ── Runtime summary table ────────────────────────────────────────────────
     save_csv(
-        tables_dir / "runtime-summary.csv",
+        layout.tables / "runtime-summary.csv",
         ["profile", "average_runtime_ms", "total_runtime_ms"],
         experiment_summary["profiles"],
     )
     save_text(
-        tables_dir / "runtime-summary.md",
+        layout.tables / "runtime-summary.md",
         build_markdown_table(
             experiment_summary["profiles"],
             ["profile", "average_runtime_ms", "total_runtime_ms"],
@@ -97,12 +97,12 @@ def generate_report(
 
     # ── False-positive / False-negative summary table ────────────────────────
     save_csv(
-        tables_dir / "fp-fn-summary.csv",
+        layout.tables / "fp-fn-summary.csv",
         ["profile", "exact_match_accuracy", "total_false_positives", "total_false_negatives"],
         experiment_summary["profiles"],
     )
     save_text(
-        tables_dir / "fp-fn-summary.md",
+        layout.tables / "fp-fn-summary.md",
         build_markdown_table(
             experiment_summary["profiles"],
             [
@@ -122,7 +122,7 @@ def generate_report(
 
     condition_rows = build_condition_summary_rows(detail_summaries)
     save_csv(
-        tables_dir / "condition-summary.csv",
+        layout.tables / "condition-summary.csv",
         [
             "profile",
             "condition_type",
@@ -134,7 +134,7 @@ def generate_report(
         condition_rows,
     )
     save_text(
-        tables_dir / "condition-summary.md",
+        layout.tables / "condition-summary.md",
         build_markdown_table(
             condition_rows,
             [
@@ -161,7 +161,7 @@ def generate_report(
     error_type_rows = build_error_type_rows(detail_summaries)
 
     save_csv(
-        tables_dir / "error-analysis.csv",
+        layout.tables / "error-analysis.csv",
         [
             "profile",
             "image_id",
@@ -179,7 +179,7 @@ def generate_report(
         error_rows,
     )
     save_text(
-        tables_dir / "error-analysis.md",
+        layout.tables / "error-analysis.md",
         build_markdown_table(
             error_rows,
             [
@@ -206,7 +206,7 @@ def generate_report(
     )
 
     save_csv(
-        tables_dir / "worst-cases.csv",
+        layout.tables / "worst-cases.csv",
         [
             "profile",
             "image_id",
@@ -220,7 +220,7 @@ def generate_report(
         worst_case_rows,
     )
     save_text(
-        tables_dir / "worst-cases.md",
+        layout.tables / "worst-cases.md",
         build_markdown_table(
             worst_case_rows,
             [
@@ -247,12 +247,12 @@ def generate_report(
     )
 
     save_csv(
-        tables_dir / "error-type-summary.csv",
+        layout.tables / "error-type-summary.csv",
         ["profile", "error_type", "image_count", "rate"],
         error_type_rows,
     )
     save_text(
-        tables_dir / "error-type-summary.md",
+        layout.tables / "error-type-summary.md",
         build_markdown_table(
             error_type_rows,
             ["profile", "error_type", "image_count", "rate"],
@@ -269,19 +269,21 @@ def generate_report(
         metadata_file,
         profile_set["profiles"],
         selected_profiles,
-        masks_dir,
-        overlays_dir,
+        layout.masks,
+        layout.overlays,
     )
-    _write_figure_exports(experiment_summary["profiles"], condition_rows, figures_dir)
+    _write_figure_exports(experiment_summary["profiles"], condition_rows, layout.charts)
     return {
         "experiment_summary": experiment_summary,
         "condition_rows": condition_rows,
         "error_rows": error_rows,
         "worst_case_rows": worst_case_rows,
         "error_type_rows": error_type_rows,
-        "tables_dir": str(tables_dir),
-        "figures_dir": str(figures_dir),
-        "details_dir": str(details_dir),
+        "tables_dir": str(layout.tables),
+        "charts_dir": str(layout.charts),
+        "json_details_dir": str(layout.json_details),
+        "masks_dir": str(layout.masks),
+        "overlays_dir": str(layout.overlays),
         "output_dir": str(report_root),
     }
 
@@ -297,11 +299,13 @@ def build_report_bundle(
         from cs423_segmentation.tuning import tune_profile
 
         profile_set = load_profile_set(metadata_file)
-        tuning_root = Path(output_dir) / "tuning"
-        tuning_root.mkdir(parents=True, exist_ok=True)
+        bundle_layout = ReportLayout(Path(output_dir))
+        bundle_layout.threshold_tuning.mkdir(parents=True, exist_ok=True)
         for profile_name in sorted(profile_set["profiles"]):
             tuning_outputs.append(
-                tune_profile(metadata_file, profile_name, tuning_root / profile_name)
+                tune_profile(
+                    metadata_file, profile_name, bundle_layout.threshold_tuning / profile_name
+                )
             )
     bundle_summary = {
         "validation": validation,
@@ -443,6 +447,9 @@ def _write_visualizations(
     for item in metadata["images"]:
         image = load_image(dataset_root / item["image_path"])
         for profile_name in selected_profiles:
+            color_filter = infer_profile_target_color(profile_name)
+            if color_filter is not None and item["target_color"] != color_filter:
+                continue
             result = run_pipeline(image, profiles[profile_name])
             base_name = f"{item['image_id']}-{profile_name}"
             save_mask_image(result.mask, masks_dir / f"{base_name}.png")
@@ -450,12 +457,12 @@ def _write_visualizations(
 
 
 def _write_figure_exports(
-    profile_rows: list[dict[str, Any]], condition_rows: list[dict[str, Any]], figures_dir: Path
+    profile_rows: list[dict[str, Any]], condition_rows: list[dict[str, Any]], charts_dir: Path
 ) -> None:
-    save_text(figures_dir / "profile-accuracy.svg", _build_profile_accuracy_svg(profile_rows))
-    save_text(figures_dir / "profile-runtime.svg", _build_profile_runtime_svg(profile_rows))
+    save_text(charts_dir / "profile-accuracy.svg", _build_profile_accuracy_svg(profile_rows))
+    save_text(charts_dir / "profile-runtime.svg", _build_profile_runtime_svg(profile_rows))
     save_text(
-        figures_dir / "lighting-accuracy.svg", _build_condition_svg(condition_rows, "lighting")
+        charts_dir / "lighting-accuracy.svg", _build_condition_svg(condition_rows, "lighting")
     )
 
 
@@ -525,17 +532,25 @@ def validate_dataset_or_raise(metadata_path: Path) -> dict[str, Any]:
 
 def _build_bundle_readme(report: dict[str, Any], include_tuning: bool) -> str:
     lines = [
-        "# Report Bundle",
+        "# Sunum paketi / Report bundle",
         "",
-        "Generated artifacts:",
+        "Bu klasördeki alt dizinler (TR) / Folders:",
         "",
-        "- `tables/`: CSV and Markdown summaries",
-        "- `figures/`: SVG figure exports for report/presentation reuse",
-        "- `details/`: raw JSON summaries for each profile",
-        "- `visuals/masks/`: binary mask images",
-        "- `visuals/overlays/`: overlay previews",
+        "- `tables/`: Özet tablolar (CSV + Markdown) — profil karşılaştırması, hatalar.",
+        "- `charts/`: Sunum için SVG çubuk grafikleri.",
+        "- `json-details/`: Programların okuyacağı ham JSON (deney özeti, profil başına detay).",
+        "- `image-previews/masks/`: Siyah-beyaz segmentasyon maskeleri (PNG).",
+        "- `image-previews/overlays/`: Orijinal görüntü + maske üst üste (PNG).",
     ]
     if include_tuning:
-        lines.append("- `tuning/`: candidate threshold rankings per profile")
-    lines.extend(["", f"Profiles in bundle: {len(report['experiment_summary']['profiles'])}"])
+        lines.append(
+            "- `threshold-tuning/`: Eşik varyantlarının sıralaması (her profil alt klasörde "
+            "`tuning-results.*`)."
+        )
+    lines.extend(
+        [
+            "",
+            f"Profil sayısı / Profiles: {len(report['experiment_summary']['profiles'])}",
+        ]
+    )
     return "\n".join(lines) + "\n"

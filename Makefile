@@ -11,6 +11,7 @@ help:
 	@echo "  make test          - Run pytest"
 	@echo "  make smoke-test    - Run CLI smoke test"
 	@echo "  make validate-pr   - Run the full pre-PR validation suite"
+	@echo "  (Output paths: results/datasets/... — see results/README.md)"
 	@echo "  make evaluate-rgb  - Evaluate the bundled sample dataset with the RGB profile"
 	@echo "  make evaluate-hsv  - Evaluate the bundled sample dataset with the HSV profile"
 	@echo "  make run-experiments - Evaluate all bundled profiles and write a summary"
@@ -41,31 +42,31 @@ smoke-test:
 	npm run smoke-test
 
 evaluate-rgb:
-	PYTHONPATH=src python3 -m cs423_segmentation evaluate --metadata data/sample/metadata/dataset.json --profile rgb_red --output results/tables/rgb-sample-results.json
+	PYTHONPATH=src python3 -m cs423_segmentation evaluate --metadata data/sample/metadata/dataset.json --profile rgb_red --output results/datasets/sample/quick-eval/rgb_red.json
 
 evaluate-hsv:
-	PYTHONPATH=src python3 -m cs423_segmentation evaluate --metadata data/sample/metadata/dataset.json --profile hsv_red --output results/tables/hsv-sample-results.json
+	PYTHONPATH=src python3 -m cs423_segmentation evaluate --metadata data/sample/metadata/dataset.json --profile hsv_red --output results/datasets/sample/quick-eval/hsv_red.json
 
 run-experiments:
-	PYTHONPATH=src python3 -m cs423_segmentation run-experiments --metadata data/sample/metadata/dataset.json --output results/tables/experiment-summary.json
+	PYTHONPATH=src python3 -m cs423_segmentation run-experiments --metadata data/sample/metadata/dataset.json --output results/datasets/sample/quick-eval/experiment-summary.json
 
 generate-report:
-	PYTHONPATH=src python3 -m cs423_segmentation generate-report --metadata data/sample/metadata/dataset.json --output-dir results/reports/sample
+	PYTHONPATH=src python3 -m cs423_segmentation generate-report --metadata data/sample/metadata/dataset.json --output-dir results/datasets/sample/full-report
 
 validate-real-dataset:
 	PYTHONPATH=src python3 -m cs423_segmentation validate-dataset --metadata data/real/metadata/dataset.json
 
 tune-sample-rgb:
-	PYTHONPATH=src python3 -m cs423_segmentation tune-profile --metadata data/sample/metadata/dataset.json --profile rgb_red --output-dir results/tuning/sample/rgb_red
+	PYTHONPATH=src python3 -m cs423_segmentation tune-profile --metadata data/sample/metadata/dataset.json --profile rgb_red --output-dir results/datasets/sample/threshold-tuning/rgb_red
 
 tune-sample-hsv:
-	PYTHONPATH=src python3 -m cs423_segmentation tune-profile --metadata data/sample/metadata/dataset.json --profile hsv_red --output-dir results/tuning/sample/hsv_red
+	PYTHONPATH=src python3 -m cs423_segmentation tune-profile --metadata data/sample/metadata/dataset.json --profile hsv_red --output-dir results/datasets/sample/threshold-tuning/hsv_red
 
 build-sample-bundle:
-	PYTHONPATH=src python3 -m cs423_segmentation build-bundle --metadata data/sample/metadata/dataset.json --output-dir results/bundles/sample
+	PYTHONPATH=src python3 -m cs423_segmentation build-bundle --metadata data/sample/metadata/dataset.json --output-dir results/datasets/sample/presentation-bundle
 
 build-real-bundle:
-	PYTHONPATH=src python3 -m cs423_segmentation build-bundle --metadata data/real/metadata/dataset.json --output-dir results/bundles/real
+	PYTHONPATH=src python3 -m cs423_segmentation build-bundle --metadata data/real/metadata/dataset.json --output-dir results/datasets/real/presentation-bundle
 
 validate-pr:
 	npm run validate:push

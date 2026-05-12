@@ -51,9 +51,9 @@ def test_generate_report_writes_csv_and_visualization_artifacts(tmp_path: Path) 
     error_analysis = tmp_path / "tables" / "error-analysis.csv"
     worst_cases = tmp_path / "tables" / "worst-cases.csv"
     error_type_summary = tmp_path / "tables" / "error-type-summary.csv"
-    figure_svg = tmp_path / "figures" / "profile-accuracy.svg"
-    mask_image = tmp_path / "visuals" / "masks" / "sample-001-hsv_red.png"
-    overlay_image = tmp_path / "visuals" / "overlays" / "sample-001-hsv_red.png"
+    figure_svg = tmp_path / "charts" / "profile-accuracy.svg"
+    mask_image = tmp_path / "image-previews" / "masks" / "sample-001-hsv_red.png"
+    overlay_image = tmp_path / "image-previews" / "overlays" / "sample-001-hsv_red.png"
 
     assert report["experiment_summary"]["profile_set_version"] == "v1"
     assert profile_summary.exists()
@@ -120,10 +120,10 @@ def test_build_report_bundle_writes_structured_output_tree(tmp_path: Path) -> No
     assert bundle["validation"]["is_valid"] is True
     assert (tmp_path / "README.md").exists()
     assert (tmp_path / "tables" / "profile-summary.csv").exists()
-    assert (tmp_path / "figures" / "profile-runtime.svg").exists()
-    assert (tmp_path / "details" / "experiment-summary.json").exists()
-    assert (tmp_path / "visuals" / "masks" / "sample-001-hsv_red.png").exists()
-    assert (tmp_path / "tuning" / "hsv_red" / "tuning-results.md").exists()
+    assert (tmp_path / "charts" / "profile-runtime.svg").exists()
+    assert (tmp_path / "json-details" / "experiment-summary.json").exists()
+    assert (tmp_path / "image-previews" / "masks" / "sample-001-hsv_red.png").exists()
+    assert (tmp_path / "threshold-tuning" / "hsv_red" / "tuning-results.md").exists()
 
 
 def test_build_report_bundle_skip_tuning_omits_tuning_artifacts(tmp_path: Path) -> None:
@@ -132,4 +132,4 @@ def test_build_report_bundle_skip_tuning_omits_tuning_artifacts(tmp_path: Path) 
     )
     assert bundle["validation"]["is_valid"] is True
     assert (tmp_path / "tables" / "profile-summary.csv").exists()
-    assert not (tmp_path / "tuning").exists()
+    assert not (tmp_path / "threshold-tuning").exists()

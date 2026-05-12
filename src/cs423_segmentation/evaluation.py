@@ -11,6 +11,23 @@ from cs423_segmentation.io_utils import load_image, save_json
 from cs423_segmentation.pipeline import run_pipeline
 
 
+def infer_profile_target_color(profile_name: str) -> Optional[str]:
+    """Return the object color a profile segments, if the name follows ``rgb_*`` / ``hsv_*``.
+
+    Tuning candidates use names like ``hsv_red-base``; the color is taken from the stem
+    before the first ``-``. Unknown patterns return ``None`` (evaluate on every image).
+    """
+
+    stem = profile_name.split("-", 1)[0]
+    parts = stem.split("_", 1)
+    if len(parts) != 2:
+        return None
+    space, color = parts
+    if space not in ("rgb", "hsv") or not color:
+        return None
+    return color
+
+
 def evaluate_dataset(
     metadata_path: Union[str, Path], profile_name: str, output_path: Union[str, Path]
 ) -> dict[str, Any]:
@@ -29,6 +46,7 @@ def evaluate_dataset_summary(
     profile_set = load_profile_set(metadata_file)
     profile = profile_override or profile_set["profiles"][profile_name]
     dataset_root = metadata_file.parents[3]
+    color_filter = infer_profile_target_color(profile_name)
 
     per_image_results: list[dict[str, Any]] = []
     absolute_errors: list[int] = []
@@ -36,6 +54,8 @@ def evaluate_dataset_summary(
     total_runtime_ms = 0.0
 
     for item in metadata["images"]:
+        if color_filter is not None and item["target_color"] != color_filter:
+            continue
         image_path = dataset_root / item["image_path"]
         expected_count = int(item["expected_count"])
         image = load_image(image_path)
@@ -73,6 +93,24 @@ def evaluate_dataset_summary(
         )
 
     image_count = len(per_image_results)
+    if image_count == 0:
+        return {
+            "dataset_name": metadata["dataset_name"],
+            "metadata_schema_version": metadata["metadata_schema_version"],
+            "profile_set_name": profile_set["profile_set_name"],
+            "profile_set_version": profile_set["profile_set_version"],
+            "profile": profile_name,
+            "target_color_filter": color_filter,
+            "image_count": 0,
+            "exact_match_accuracy": 0.0,
+            "mean_absolute_error": 0.0,
+            "total_false_positives": 0,
+            "total_false_negatives": 0,
+            "average_runtime_ms": 0.0,
+            "total_runtime_ms": 0.0,
+            "per_image": [],
+        }
+
     total_fp = sum(r["false_positives"] for r in per_image_results)
     total_fn = sum(r["false_negatives"] for r in per_image_results)
     summary = {
@@ -81,6 +119,7 @@ def evaluate_dataset_summary(
         "profile_set_name": profile_set["profile_set_name"],
         "profile_set_version": profile_set["profile_set_version"],
         "profile": profile_name,
+        "target_color_filter": color_filter,
         "image_count": image_count,
         "exact_match_accuracy": exact_matches / image_count if image_count else 0.0,
         "mean_absolute_error": sum(absolute_errors) / image_count if image_count else 0.0,
@@ -111,6 +150,7 @@ def run_experiments(
         summaries.append(
             {
                 "profile": profile_name,
+                "image_count": summary["image_count"],
                 "exact_match_accuracy": summary["exact_match_accuracy"],
                 "mean_absolute_error": summary["mean_absolute_error"],
                 "total_false_positives": summary["total_false_positives"],

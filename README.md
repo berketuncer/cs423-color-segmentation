@@ -53,30 +53,32 @@ make tune-sample-hsv
 make build-sample-bundle
 ```
 
-Outputs are written under the command-specific output directories.
+Outputs are written under `results/datasets/...` (see `results/README.md` for a Turkish layout guide).
 
-`make generate-report` writes:
+For profiles named `rgb_<color>` or `hsv_<color>` (including tuning variants like `hsv_red-base`), evaluation uses **only images whose metadata `target_color` matches** that color, so a red profile is not scored on blue-target photos.
 
-- `results/reports/sample/tables/profile-summary.csv`
-- `results/reports/sample/tables/condition-summary.csv`
-- `results/reports/sample/figures/profile-accuracy.svg`
-- `results/reports/sample/details/experiment-summary.json`
-- `results/reports/sample/visuals/masks/*.png`
-- `results/reports/sample/visuals/overlays/*.png`
+`make generate-report` writes (under `results/datasets/sample/full-report/`):
+
+- `tables/profile-summary.csv`
+- `tables/condition-summary.csv`
+- `charts/profile-accuracy.svg`
+- `json-details/experiment-summary.json`
+- `image-previews/masks/*.png`
+- `image-previews/overlays/*.png`
 
 `make tune-sample-rgb` and `make tune-sample-hsv` write ranked tuning artifacts under:
 
-- `results/tuning/sample/.../tuning-results.json`
-- `results/tuning/sample/.../tuning-results.csv`
-- `results/tuning/sample/.../tuning-results.md`
+- `results/datasets/sample/threshold-tuning/<profile>/tuning-results.json`
+- `results/datasets/sample/threshold-tuning/<profile>/tuning-results.csv`
+- `results/datasets/sample/threshold-tuning/<profile>/tuning-results.md`
 
 `make build-sample-bundle` writes a structured final-material bundle under:
 
-- `results/bundles/sample/tables/`
-- `results/bundles/sample/figures/`
-- `results/bundles/sample/details/`
-- `results/bundles/sample/visuals/`
-- `results/bundles/sample/tuning/`
+- `results/datasets/sample/presentation-bundle/tables/`
+- `results/datasets/sample/presentation-bundle/charts/`
+- `results/datasets/sample/presentation-bundle/json-details/`
+- `results/datasets/sample/presentation-bundle/image-previews/`
+- `results/datasets/sample/presentation-bundle/threshold-tuning/`
 
 When the real dataset is ready, run:
 
@@ -104,11 +106,11 @@ make validate-real-dataset
 PYTHONPATH=src python3 -m cs423_segmentation evaluate \
   --metadata data/sample/metadata/dataset.json \
   --profile hsv_red \
-  --output results/tables/hsv-sample-results.json
+  --output results/datasets/sample/quick-eval/hsv_red.json
 
 PYTHONPATH=src python3 -m cs423_segmentation run-experiments \
   --metadata data/sample/metadata/dataset.json \
-  --output results/tables/experiment-summary.json
+  --output results/datasets/sample/quick-eval/experiment-summary.json
 ```
 
 ## Repository Rules

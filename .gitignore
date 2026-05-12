@@ -9,7 +9,9 @@ dist/
 build/
 coverage/
 htmlcov/
-results/
+# Üretilen çıktılar (results/README.md repoda kalır)
+results/*
+!results/README.md
 Ders İçerikleri/
 Ders İçerikleri/
 *.pyc
